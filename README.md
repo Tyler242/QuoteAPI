@@ -16,3 +16,12 @@ Base URL: https://quoteapp-api.herokuapp.com/api
 * Add DELETE and PUT endpoints for individual quotes.
 * Add query parameters on GET /quotes to allow filtering.
 * Add authentication to allow for multiple users with separate tables.
+
+## Tools
+
+* C#
+* ASP.NET Framework
+* MongoDB
+* GitHub
+* Heroku
+* [Dotnetcore-buildpack](https://elements.heroku.com/buildpacks/jincod/dotnetcore-buildpack)
