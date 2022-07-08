@@ -23,19 +23,35 @@ namespace QuoteAPI.Controllers
             Quote quote = await _quoteService.GetQuoteByIdAsync(id);
 
             if (quote == null)
-            {
                 return NotFound();
-            }
 
-            return quote;
+            return Ok(quote);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuote(Quote quoteModel)
-        {
-            await _quoteService.CreateQuoteAsync(quoteModel);
+        public async Task<IActionResult> CreateQuote(QuoteCreationModel quoteModel) =>
+            Ok(await _quoteService.CreateQuoteAsync(quoteModel));
 
-            return CreatedAtAction(nameof(GetQuoteById), new { id = quoteModel.Id }, quoteModel);
+        [HttpPut("{id:length(24)}")]
+        public async Task<IActionResult> UpdateQuote(string id, QuoteUpdateModel updateModel)
+        {
+            Quote? quote = await _quoteService.UpdateQuoteAsync(id, updateModel);
+
+            if (quote == null)
+                return NotFound();
+
+            return Ok(quote);
+        }
+
+        [HttpDelete("{id:length(24)}")]
+        public async Task<ActionResult> DeleteQuote(string id)
+        {
+            Quote? quote = await _quoteService.RemoveQuoteAsync(id);
+
+            if (quote == null)
+                return NotFound();
+
+            return Ok(quote);
         }
     }
 }

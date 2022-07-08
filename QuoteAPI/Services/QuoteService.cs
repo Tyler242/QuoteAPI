@@ -11,10 +11,12 @@ namespace QuoteAPI.Services
         private string? HerokuConnectionString { get; set; }
         private string? HerokuDatabaseName { get; set; }
         private string? HerokuCollectionName { get; set; }
+        private QuoteModelFactory _quoteModelFactory { get; set; }
 
         public QuoteService(
             IOptions<QuoteDBSettings> quoteDbSettings, 
-            IOptions<QuoteDBCredentials> quoteDbCredentials)
+            IOptions<QuoteDBCredentials> quoteDbCredentials,
+            QuoteModelFactory quoteModelFactory)
         {
             SetHerokuEnvVars();
 
@@ -24,6 +26,8 @@ namespace QuoteAPI.Services
             IMongoDatabase mongoDb = mongoClient.GetDatabase(HerokuDatabaseName ?? quoteDbSettings.Value.DatabaseName);
 
             _quoteCollection = mongoDb.GetCollection<Quote>(HerokuCollectionName ?? quoteDbSettings.Value.QuoteCollectionName);
+
+            _quoteModelFactory = quoteModelFactory;
         }
 
         public async Task<List<Quote>> GetQuotesAsync() => 
@@ -32,14 +36,39 @@ namespace QuoteAPI.Services
         public async Task<Quote> GetQuoteByIdAsync(string id) =>
             await _quoteCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateQuoteAsync(Quote newQuote) =>
-            await _quoteCollection.InsertOneAsync(newQuote);
+        public async Task<Quote> CreateQuoteAsync(QuoteCreationModel creationModel)
+        {
+            Quote quote = _quoteModelFactory.ConvertToQuote(creationModel);
 
-        public async Task UpdateQuoteAsync(string id, Quote updatedQuote) =>
-            await _quoteCollection.ReplaceOneAsync(x => x.Id == id, updatedQuote);
+            await _quoteCollection.InsertOneAsync(quote);
 
-        public async Task RemoveQuoteAsync(string id) =>
+            return quote;
+        }
+
+        public async Task<Quote?> UpdateQuoteAsync(string id, QuoteUpdateModel updatedQuote)
+        {
+            Quote quote = await _quoteCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+            if (quote == null)
+            {
+                return null;
+            }
+
+            quote = _quoteModelFactory.ConvertToQuote(updatedQuote, quote);
+            await _quoteCollection.ReplaceOneAsync(x => x.Id == id, quote);
+
+            return quote;
+        }
+
+        public async Task<Quote?> RemoveQuoteAsync(string id)
+        {
+            Quote quote = await _quoteCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            if (quote == null)
+                return null;
+            
             await _quoteCollection.DeleteOneAsync(x => x.Id == id);
+            return quote;
+        }
 
         private static string ConfigureDbConnection(string baseConnectionString, IOptions<QuoteDBCredentials> dbCredentials)
         {

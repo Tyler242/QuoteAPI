@@ -11,6 +11,7 @@ builder.Services.Configure<QuoteDBSettings>(
 builder.Services.Configure<QuoteDBCredentials>(
     builder.Configuration.GetSection("DBCredentials"));
 
+builder.Services.AddSingleton<QuoteModelFactory>();
 builder.Services.AddSingleton<QuoteService>();
 
 builder.Services.AddControllers();

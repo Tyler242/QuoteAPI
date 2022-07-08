@@ -19,4 +19,18 @@ namespace QuoteAPI.Models
         [BsonElement("Views")]
         public int? Views { get; set; }
     }
+
+    public class QuoteUpdateModel
+    {
+        public string? QuoteText { get; set; }
+        public string? QuoteSource { get; set; }
+        public List<string>? Tags { get; set; }
+    }
+
+    public class QuoteCreationModel
+    {
+        public string? QuoteText { get; set; }
+        public string? QuoteSource { get; set; }
+        public List<string>? Tags { get; set; }
+    }
 }
