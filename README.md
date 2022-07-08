@@ -10,10 +10,13 @@ Base URL: https://quoteapp-api.herokuapp.com/api
 	Creates a quote from the quote object that is sent with the request.
 * GET /quotes/{id}
 	Returns a single quote that matches the id sent with the url.
+* PUT /quotes/{id}
+	Updates a single quote that matches the id sent with the url.
+* DELETE /quotes/{id}
+	Deletes a single quote that matches the id sent wiht the url.
 
 ## Future Work
 
-* Add DELETE and PUT endpoints for individual quotes.
 * Add query parameters on GET /quotes to allow filtering.
 * Add authentication to allow for multiple users with separate tables.
 
