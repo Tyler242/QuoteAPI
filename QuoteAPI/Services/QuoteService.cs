@@ -8,16 +8,22 @@ namespace QuoteAPI.Services
     public class QuoteService
     {
         private readonly IMongoCollection<Quote> _quoteCollection;
+        private string? HerokuConnectionString { get; set; }
+        private string? HerokuDatabaseName { get; set; }
+        private string? HerokuCollectionName { get; set; }
 
         public QuoteService(
             IOptions<QuoteDBSettings> quoteDbSettings, 
             IOptions<QuoteDBCredentials> quoteDbCredentials)
         {
-            MongoClient mongoClient = new(ConfigureDbConnection(quoteDbSettings.Value.ConnectionString, quoteDbCredentials));
+            SetHerokuEnvVars();
 
-            IMongoDatabase mongoDb = mongoClient.GetDatabase(quoteDbSettings.Value.DatabaseName);
+            MongoClient mongoClient = new(HerokuConnectionString ?? 
+                ConfigureDbConnection(quoteDbSettings.Value.ConnectionString, quoteDbCredentials));
 
-            _quoteCollection = mongoDb.GetCollection<Quote>(quoteDbSettings.Value.QuoteCollectionName);
+            IMongoDatabase mongoDb = mongoClient.GetDatabase(HerokuDatabaseName ?? quoteDbSettings.Value.DatabaseName);
+
+            _quoteCollection = mongoDb.GetCollection<Quote>(HerokuCollectionName ?? quoteDbSettings.Value.QuoteCollectionName);
         }
 
         public async Task<List<Quote>> GetQuotesAsync() => 
@@ -41,6 +47,13 @@ namespace QuoteAPI.Services
                 .Replace("<username>", dbCredentials.Value.DBUsername)
                 .Replace("<password>", dbCredentials.Value.DBPassword)
                 .Replace("@", $"@{dbCredentials.Value.DBEndString}");
+        }
+
+        private void SetHerokuEnvVars()
+        {
+            HerokuConnectionString = Environment.GetEnvironmentVariable("connectionString");
+            HerokuDatabaseName = Environment.GetEnvironmentVariable("databaseName");
+            HerokuCollectionName = Environment.GetEnvironmentVariable("quoteCollectionName");
         }
     }
 }
