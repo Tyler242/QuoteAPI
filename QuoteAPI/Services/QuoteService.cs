@@ -30,8 +30,30 @@ namespace QuoteAPI.Services
             _quoteModelFactory = quoteModelFactory;
         }
 
-        public async Task<List<Quote>> GetQuotesAsync() => 
-            await _quoteCollection.Find(_ => true).ToListAsync();
+        public List<Quote> GetQuotes(string? word = null, string? source = null, string? keyword = null)
+        {
+            IQueryable<Quote> quotes = _quoteCollection.AsQueryable();
+
+            if (word != null)
+            {
+                word = word.Trim();
+                quotes = quotes.Where(x => x.QuoteText!.Contains(word));
+            }
+
+            if (source != null)
+            {
+                source = source.Trim();
+                quotes = quotes.Where(x => x.QuoteSource!.Equals(source));
+            }
+
+            if (keyword != null)
+            {
+                keyword = keyword.Trim();
+                quotes = quotes.Where(x => x.Tags!.Contains(keyword));
+            }
+
+            return quotes.ToList();
+        }
 
         public async Task<Quote> GetQuoteByIdAsync(string id) =>
             await _quoteCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

@@ -14,8 +14,8 @@ namespace QuoteAPI.Controllers
             _quoteService = quoteService;
 
         [HttpGet]
-        public async Task<List<Quote>> GetAllQuotes() =>
-            await _quoteService.GetQuotesAsync();
+        public List<Quote> GetAllQuotes([FromQuery] string? word = null, string? source = null, string? keyword = null) =>
+            _quoteService.GetQuotes(word, source, keyword);
 
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Quote>> GetQuoteById(string id)
