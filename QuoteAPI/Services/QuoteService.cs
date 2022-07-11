@@ -30,7 +30,7 @@ namespace QuoteAPI.Services
             _quoteModelFactory = quoteModelFactory;
         }
 
-        public List<Quote> GetQuotes(string? word = null, string? source = null, string? keyword = null)
+        public List<Quote> GetQuotes(string? word = null, string? source = null, string? tag = null)
         {
             IQueryable<Quote> quotes = _quoteCollection.AsQueryable();
 
@@ -46,10 +46,10 @@ namespace QuoteAPI.Services
                 quotes = quotes.Where(x => x.QuoteSource!.Equals(source));
             }
 
-            if (keyword != null)
+            if (tag != null)
             {
-                keyword = keyword.Trim();
-                quotes = quotes.Where(x => x.Tags!.Contains(keyword));
+                tag = tag.Trim();
+                quotes = quotes.Where(x => x.Tags!.Contains(tag));
             }
 
             return quotes.ToList();

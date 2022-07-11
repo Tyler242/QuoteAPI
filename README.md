@@ -4,8 +4,8 @@ Base URL: https://quoteapp-api.herokuapp.com/api
 
 ## Current Endpoints
 
-* GET /quotes
-	Returns a list containing every quote within the database.
+* GET /quotes?word={word}&source={source}&tag={tag}
+	Returns a list containing quotes that match the query parameter filters.
 * POST /quotes
 	Creates a quote from the quote object that is sent with the request.
 * GET /quotes/{id}
@@ -17,7 +17,6 @@ Base URL: https://quoteapp-api.herokuapp.com/api
 
 ## Future Work
 
-* Add query parameters on GET /quotes to allow filtering.
 * Add authentication to allow for multiple users with separate tables.
 
 ## Tools
