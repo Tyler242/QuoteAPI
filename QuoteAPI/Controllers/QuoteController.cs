@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuoteAPI.Models;
 using QuoteAPI.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuoteAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace QuoteAPI.Controllers
             _quoteService.GetQuotes(word, source, tag);
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<Quote>> GetQuoteById(string id)
+        public async Task<ActionResult<Quote>> GetQuoteById([FromRoute] string id)
         {
             Quote quote = await _quoteService.GetQuoteByIdAsync(id);
 
@@ -29,11 +30,11 @@ namespace QuoteAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuote(QuoteCreationModel quoteModel) =>
+        public async Task<IActionResult> CreateQuote([FromBody] QuoteCreationModel quoteModel) =>
             Ok(await _quoteService.CreateQuoteAsync(quoteModel));
 
         [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> UpdateQuote(string id, QuoteUpdateModel updateModel)
+        public async Task<IActionResult> UpdateQuote([FromRoute] string id, [FromBody] QuoteUpdateModel updateModel)
         {
             Quote? quote = await _quoteService.UpdateQuoteAsync(id, updateModel);
 
@@ -44,7 +45,7 @@ namespace QuoteAPI.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
-        public async Task<ActionResult> DeleteQuote(string id)
+        public async Task<ActionResult> DeleteQuote([FromRoute] string id)
         {
             Quote? quote = await _quoteService.RemoveQuoteAsync(id);
 

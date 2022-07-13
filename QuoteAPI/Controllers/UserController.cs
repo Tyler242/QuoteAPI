@@ -34,7 +34,6 @@ namespace QuoteAPI.Controllers
                 _token = _tokenService.BuildToken(validUser);
                 if (_token != null)
                 {
-                    //HttpContext.Session.SetString("Token", _token);
                     return Ok($"Authenticated with {_token}");
                 }
                 else

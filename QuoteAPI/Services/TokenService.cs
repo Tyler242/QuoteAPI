@@ -27,17 +27,19 @@ namespace QuoteAPI.Services
                 new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenSettings.Value.Key!));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes((_jwtTokenSettings.Value.Key ?? Environment.GetEnvironmentVariable("JWTKey"))!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-            var tokenDescriptor = new JwtSecurityToken(_jwtTokenSettings.Value.Issuer!, _jwtTokenSettings.Value.Issuer!,
-                claims, expires: DateTime.Now.AddMinutes(EXPIRY_DURATION_MINUTES), signingCredentials: credentials);
+
+            var tokenDescriptor = new JwtSecurityToken(_jwtTokenSettings.Value.Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"),
+                _jwtTokenSettings.Value.Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"), claims,
+                expires: DateTime.Now.AddMinutes(EXPIRY_DURATION_MINUTES), signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
         public bool IsTokenValid(string token)
         {
-            var mySecret = Encoding.UTF8.GetBytes(_jwtTokenSettings.Value.Key!);
+            var mySecret = Encoding.UTF8.GetBytes((_jwtTokenSettings.Value.Key ?? Environment.GetEnvironmentVariable("JWTKey"))!);
             var mySecurityKey = new SymmetricSecurityKey(mySecret);
             var tokenHandler = new JwtSecurityTokenHandler();
             try
@@ -47,8 +49,8 @@ namespace QuoteAPI.Services
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidIssuer = _jwtTokenSettings.Value.Issuer!,
-                    ValidAudience = _jwtTokenSettings.Value.Issuer!,
+                    ValidIssuer = _jwtTokenSettings.Value.Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"),
+                    ValidAudience = _jwtTokenSettings.Value.Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"),
                     IssuerSigningKey = mySecurityKey,
                 }, out SecurityToken validatedToken);
             } 
