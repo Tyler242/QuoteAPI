@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using QuoteAPI.Helpers;
 using QuoteAPI.Models;
-using System.Diagnostics;
 
 namespace QuoteAPI.Services
 {

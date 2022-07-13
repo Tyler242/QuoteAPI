@@ -1,4 +1,4 @@
-﻿namespace QuoteAPI.Models
+﻿namespace QuoteAPI.Helpers
 {
     public class QuoteDBCredentials
     {

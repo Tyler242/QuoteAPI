@@ -1,4 +1,6 @@
-﻿namespace QuoteAPI.Models
+﻿using QuoteAPI.Models;
+
+namespace QuoteAPI.Helpers
 {
     public class QuoteModelFactory
     {
