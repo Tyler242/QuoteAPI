@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuoteAPI.Models;
 using QuoteAPI.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuoteAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/quotes")]
     public class QuoteController : ControllerBase

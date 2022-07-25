@@ -22,12 +22,12 @@ namespace QuoteAPI.Controllers
         [AllowAnonymous]
         [Route("login")]
         [HttpPost]
-        public async Task<IActionResult> Login(UserModel userModel)
+        public async Task<IActionResult> Login(UserLogin userLogin)
         {
-            if (string.IsNullOrEmpty(userModel.UserName) || string.IsNullOrEmpty(userModel.Password))
+            if (string.IsNullOrEmpty(userLogin.UserName) || string.IsNullOrEmpty(userLogin.Password))
                 return BadRequest();
 
-            UserDTO? validUser = await GetUser(userModel);
+            UserDTO? validUser = await GetUser(userLogin);
 
             if (validUser != null)
             {
@@ -63,9 +63,9 @@ namespace QuoteAPI.Controllers
                 return BadRequest();
         }
 
-        private async Task<UserDTO?> GetUser(UserModel userModel)
+        private async Task<UserDTO?> GetUser(UserLogin userLogin)
         {
-            UserDTO? user = await _userService.GetUser(userModel);
+            UserDTO? user = await _userService.GetUser(userLogin);
 
             if (user == null)
                 return null;

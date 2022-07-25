@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using QuoteAPI;
 using QuoteAPI.Helpers;
-using QuoteAPI.Middleware;
 using QuoteAPI.Services;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,19 +20,30 @@ builder.Services.Configure<QuoteDBCredentials>(
 builder.Services.Configure<JWTAuthSettings>(
     builder.Configuration.GetSection("JWT"));
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using Bearer scheme (\"bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new()
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration.Get<JWTAuthSettings>().Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"),
-            ValidAudience = builder.Configuration.Get<JWTAuthSettings>().Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"),
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                (builder.Configuration.Get<JWTAuthSettings>().Key ?? Environment.GetEnvironmentVariable("JWTKey"))!))
+                (builder.Configuration.GetSection("JWT:Key").Value ?? Environment.GetEnvironmentVariable("JWTKey"))!))
         };
     });
 
@@ -42,11 +54,6 @@ builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.OperationFilter<SwaggerAuthorizationHeader>();
-});
 
 var app = builder.Build();
 
@@ -59,8 +66,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuth();
-
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

@@ -23,8 +23,7 @@ namespace QuoteAPI.Services
             List<Claim>? claims = new()
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(ClaimTypes.Role, user.Role!),
-                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, user.Role!)
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes((_jwtTokenSettings.Value.Key ?? Environment.GetEnvironmentVariable("JWTKey"))!));

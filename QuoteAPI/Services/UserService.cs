@@ -26,8 +26,8 @@ namespace QuoteAPI.Services
             _users = mongoDb.GetCollection<UserDTO>(HerokuUserCollectionName ?? quoteDbSettings.Value.UserCollectionName);
         }
 
-        public async Task<UserDTO>? GetUser(UserModel userModel) =>
-            await _users.Find(x => x.UserName! == userModel.UserName! && x.Password! == userModel.Password!).FirstOrDefaultAsync();
+        public async Task<UserDTO>? GetUser(UserLogin userLogin) =>
+            await _users.Find(x => x.UserName! == userLogin.UserName! && x.Password! == userLogin.Password!).FirstOrDefaultAsync();
 
         public async Task<bool> AddUser(UserModel userModel)
         {

@@ -4,7 +4,7 @@ namespace QuoteAPI.Services
 {
     public interface IUserService
     {
-        Task<UserDTO>? GetUser(UserModel userModel);
+        Task<UserDTO>? GetUser(UserLogin userLogin);
         Task<bool> AddUser(UserModel userModel);
     }
 }
