@@ -27,11 +27,12 @@ namespace QuoteAPI.Controllers
             if (string.IsNullOrEmpty(userLogin.UserName) || string.IsNullOrEmpty(userLogin.Password))
                 return BadRequest();
 
-            UserDTO? validUser = await GetUser(userLogin);
+            UserDTO? user = await _userService.ValidateUser(userLogin);
 
-            if (validUser != null)
+            if (user != null)
             {
-                _token = _tokenService.BuildToken(validUser);
+
+                _token = _tokenService.BuildToken(user);
                 if (_token != null)
                 {
                     return Ok($"Authenticated with {_token}");
@@ -43,7 +44,7 @@ namespace QuoteAPI.Controllers
             }
             else
             {
-                return BadRequest();
+                return Unauthorized();
             }
         }
 
@@ -61,16 +62,6 @@ namespace QuoteAPI.Controllers
                 return Ok();
             else
                 return BadRequest();
-        }
-
-        private async Task<UserDTO?> GetUser(UserLogin userLogin)
-        {
-            UserDTO? user = await _userService.GetUser(userLogin);
-
-            if (user == null)
-                return null;
-
-            return user;
         }
     }
 }
