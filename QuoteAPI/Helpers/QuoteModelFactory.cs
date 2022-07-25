@@ -20,7 +20,8 @@ namespace QuoteAPI.Helpers
             QuoteSource = creationModel.QuoteSource,
             Tags = creationModel.Tags,
             LastModified = DateTime.Now,
-            Views = 0
+            Views = 0,
+            UserId = creationModel.UserId
         };
     }
 }

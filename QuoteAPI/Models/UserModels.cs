@@ -24,6 +24,7 @@ namespace QuoteAPI.Models
         public byte[] PasswordSalt { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public string? JWTToken { get; set; }
     }
 
     public class UserLogin

@@ -6,5 +6,6 @@ namespace QuoteAPI.Services
     {
         string BuildToken(UserDTO user);
         bool IsTokenValid(string token);
+        string GetUserId(string token);
     }
 }

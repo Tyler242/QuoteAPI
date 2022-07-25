@@ -6,5 +6,6 @@ namespace QuoteAPI.Services
     {
         Task<UserDTO?> ValidateUser(UserLogin userLogin);
         Task<bool> AddUser(UserModel userModel);
+        Task AddToken(string userId, string token);
     }
 }

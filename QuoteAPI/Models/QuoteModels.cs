@@ -18,6 +18,7 @@ namespace QuoteAPI.Models
         public DateTime? LastModified { get; set; }
         [BsonElement("Views")]
         public int? Views { get; set; }
+        public string UserId { get; set; }
     }
 
     public class QuoteUpdateModel
@@ -32,5 +33,6 @@ namespace QuoteAPI.Models
         public string? QuoteText { get; set; }
         public string? QuoteSource { get; set; }
         public List<string>? Tags { get; set; }
+        public string? UserId { get; set; }
     }
 }

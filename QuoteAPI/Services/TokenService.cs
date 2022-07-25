@@ -22,12 +22,12 @@ namespace QuoteAPI.Services
         {
             List<Claim>? claims = new()
             {
-                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Name, user.Id!),
                 new Claim(ClaimTypes.Role, user.Role!)
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes((_jwtTokenSettings.Value.Key ?? Environment.GetEnvironmentVariable("JWTKey"))!));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new JwtSecurityToken(_jwtTokenSettings.Value.Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"),
                 _jwtTokenSettings.Value.Issuer ?? Environment.GetEnvironmentVariable("JWTIssuer"), claims,
@@ -58,6 +58,11 @@ namespace QuoteAPI.Services
                 return false;
             }
             return true;
+        }
+
+        public string GetUserId(string token)
+        {
+            return string.Empty;
         }
     }
 }

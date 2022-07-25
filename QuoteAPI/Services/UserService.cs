@@ -59,6 +59,13 @@ namespace QuoteAPI.Services
             return true;
         }
 
+        public async Task AddToken(string userId, string token)
+        {
+            UserDTO user = await _users.Find(x => x.Id == userId).FirstOrDefaultAsync();
+            user.JWTToken = token;
+            await _users.ReplaceOneAsync(x => x.Id == user.Id, user);
+        }
+
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using var hmac = new HMACSHA512();
