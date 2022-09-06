@@ -34,4 +34,16 @@ namespace QuoteAPI.Models
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; } = string.Empty;
     }
+
+    public class UserLoggedInResponse
+    {
+        public UserLoggedInResponse(bool success, string token)
+        {
+            Success = success;
+            Token = token;
+        }
+
+        public bool Success { get; set; }
+        public string Token { get; set; }
+    }
 }

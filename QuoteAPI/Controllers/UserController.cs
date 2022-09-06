@@ -36,7 +36,7 @@ namespace QuoteAPI.Controllers
                 if (_token != null)
                 {
                     await _userService.AddToken(user.Id, _token);
-                    return Ok($"Authenticated with {_token}");
+                    return Ok(new UserLoggedInResponse(true, _token));
                 }
                 else
                 {
